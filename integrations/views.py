@@ -4,6 +4,7 @@ from rest_framework import status
 from .models import Integration, MoodleIntegration
 from .serializers import IntegrationSerializer, MoodleIntegrationSerializer
 from rest_framework.permissions import IsAuthenticated
+from .helpers import get_moodle_courses, get_moodle_grades  
 
 
 class IntegrationListCreateView(APIView):
@@ -70,6 +71,7 @@ class MoodleIntegrationListCreateView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class MoodleIntegrationDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -79,6 +81,21 @@ class MoodleIntegrationDetailView(APIView):
         except MoodleIntegration.DoesNotExist:
             return Response({"detail": "Moodle Integration not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        # Fetch courses and grades from Moodle API
+        courses = get_moodle_courses(moodle_integration.moodle_url, moodle_integration.api_key)
+        grades = []
+        if courses:
+            for course in courses:
+                course_id = course.get('id')
+                course_grades = get_moodle_grades(moodle_integration.moodle_url, moodle_integration.api_key, course_id)
+                grades.append(course_grades)
+
+        # Update the MoodleIntegration instance with the fetched courses and grades
+        moodle_integration.courses = courses
+        moodle_integration.grades = grades
+        moodle_integration.save()
+
+        # Serialize and return the updated integration data with courses and grades
         serializer = MoodleIntegrationSerializer(moodle_integration)
         return Response(serializer.data)
 
