@@ -1,0 +1,24 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+log:
+  level: DEBUG
+
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  web:
+    address: ":80" # API Gateway
+  websecure:
+    address: ":443"
+  traefik:
+    address: ":8081"  # Dashboard entrypoint
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+
