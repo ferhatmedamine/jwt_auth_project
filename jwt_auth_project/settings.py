@@ -46,9 +46,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'polymorphic',
     'integrations',
+    'organisation_roles',
+    
     
 ]
-
+# Custom user model
+AUTH_USER_MODEL = "organisation_roles.CustomUser"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
