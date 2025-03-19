@@ -6,5 +6,5 @@ urlpatterns = [
     path('api/', include('jwt_auth_app.urls')),
     path('api/organisation/', include('organisation.urls')),
     path('api/integrations/', include('integrations.urls')),  
-    path('user/', include('user.urls')),
+    path('roles/', include('roles.urls')),
 ]
