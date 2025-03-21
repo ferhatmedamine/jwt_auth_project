@@ -4,14 +4,16 @@ from django.contrib.auth.models import Group
 from .models import Profile
 
 @receiver(post_save, sender=Profile)
-def assign_user_to_group(sender, instance, created, **kwargs):
-    user = instance.user
-    if instance.role == 'org_admin':
-        group = Group.objects.get(name='org_admin')
-    elif instance.role == 'org_staff':
-        group = Group.objects.get(name='org_staff')
-    else:
-        group = Group.objects.get(name='org_user')
-    
-    user.groups.clear()  # Remove user from all groups
-    user.groups.add(group)  # Add user to the appropriate group
+def assign_group(sender, instance, created, **kwargs):
+    if created:
+        group_name = None
+        if instance.role == 'org_admin':
+            group_name = 'org_admin'
+        elif instance.role == 'org_staff':
+            group_name = 'org_staff'
+        elif instance.role == 'org_user':
+            group_name = 'org_user'
+
+        if group_name:
+            group, created = Group.objects.get_or_create(name=group_name)
+            instance.user.groups.add(group)

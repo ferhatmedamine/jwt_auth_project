@@ -1,0 +1,8 @@
+<h1>Update Profile</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ profile_form.as_p }}
+    <button type="submit">Update</button>
+</form>
+<a href="{% url 'profile' %}">Cancel</a>

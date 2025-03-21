@@ -1,0 +1,6 @@
+<h1>Profile</h1>
+<p>Username: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+<p>Role: {{ user.profile.role }}</p>
+<p>Organisation: {{ user.profile.organisation.name }}</p>
+<a href="{% url 'update_profile' %}">Edit Profile</a>
